@@ -226,6 +226,7 @@ function MappingsRenderer({ input }) {
 }
 
 function parseMappings(input) {
+  input = input.replace(/\\\//g, "/");
   if (/^[A-Za-z0-9+/,;]*$/.test(input)) {
     // mappings string
     const mappings = [];
