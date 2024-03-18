@@ -1,7 +1,7 @@
 // @flow
 
-import React, { useState, useMemo } from "react";
-import { useSessionStorageState } from "react-storage-hooks";
+import React, { useMemo } from "react";
+import useSessionStorageState from "use-session-storage-state";
 import { decode, encode } from "vlq";
 import githubMark from "./Octicons-mark-github.svg";
 
@@ -58,7 +58,7 @@ const s = {
 };
 
 function App() {
-  const [input, setInput] = useSessionStorageState("input", "");
+  const [input, setInput] = useSessionStorageState("input", { defaultValue: "" });
 
   return (
     <div style={s.app}>
@@ -93,28 +93,28 @@ function OutputRenderer({ input }) {
 }
 
 function MappingsRenderer({ input }) {
-  if (!input) {
-    return null;
-  }
+
   const mappings = useMemo(() => parseMappings(input), [input]);
-  const [absolute, setAbsolute] = useSessionStorageState("absolute", true);
+  const [absolute, setAbsolute] = useSessionStorageState("absolute", { defaultValue: true });
   const [baseGeneratedLine, setBaseGeneratedLine] = useSessionStorageState(
     "baseGeneratedLine",
-    0
+    { defaultValue: 0 }
   );
   const [baseGeneratedColumn, setBaseGeneratedColumn] = useSessionStorageState(
     "baseGeneratedColumn",
-    0
+    { defaultValue: 0 }
   );
   const [baseOriginalLine, setBaseOriginalLine] = useSessionStorageState(
     "baseOriginalLine",
-    0
+    { defaultValue: 0 }
   );
   const [baseOriginalColumn, setBaseOriginalColumn] = useSessionStorageState(
     "baseOriginalColumn",
-    0
+    { defaultValue: 0 }
   );
-
+  if (!input) {
+    return null;
+  }
   if (mappings && mappings.length) {
     return (
       <>
@@ -225,7 +225,7 @@ function MappingsRenderer({ input }) {
   }
 }
 
-function parseMappings(input) {
+function parseMappings(input = "") {
   input = input.replace(/\\\//g, "/");
   if (/^[A-Za-z0-9+/,;]*$/.test(input)) {
     // mappings string
